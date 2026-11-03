@@ -1,0 +1,337 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090909">
+<title>HRN Finance</title>
+<style>
+:root {
+  --bg:#090909;
+  --panel:#171717;
+  --gold:#d6b36a;
+  --text:#f5f3ed;
+  --muted:#929292;
+  --red:#e47777;
+  --green:#91c69a;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  padding:25px 18px 100px;
+}
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:12px 0 30px;
+}
+.logo {
+  color:var(--gold);
+  font-size:27px;
+  font-weight:900;
+  letter-spacing:4px;
+}
+.small {color:var(--muted);font-size:12px;letter-spacing:2px}
+h1 {font-size:25px;margin:0 0 8px}
+h2 {font-size:17px;margin:0 0 17px}
+.card {
+  background:var(--panel);
+  border:1px solid #292929;
+  border-radius:19px;
+  padding:20px;
+  margin-bottom:17px;
+}
+.balance {
+  background:linear-gradient(140deg,#25221a,#121212 75%);
+  border:1px solid #665332;
+  padding:25px 21px;
+}
+.label {color:var(--muted);font-size:13px}
+.amount {
+  font-size:35px;
+  font-weight:750;
+  color:var(--gold);
+  margin:13px 0;
+  overflow-wrap:anywhere;
+}
+.stats {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.stat {
+  background:#202020;
+  border-radius:14px;
+  padding:15px;
+}
+.stat strong {display:block;font-size:18px;margin-top:9px}
+.green {color:var(--green)}
+.red {color:var(--red)}
+.gold {color:var(--gold)}
+button {
+  border:0;
+  border-radius:12px;
+  padding:14px;
+  font-size:14px;
+  font-weight:650;
+  cursor:pointer;
+}
+.primary {background:var(--gold);color:#17130a}
+.secondary {background:#292929;color:white}
+.actions {display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select {
+  width:100%;
+  padding:15px;
+  border-radius:11px;
+  border:1px solid #363636;
+  background:#222;
+  color:white;
+  font-size:15px;
+  margin:7px 0 14px;
+}
+label {font-size:12px;color:var(--muted)}
+.transaction {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:15px 0;
+  border-bottom:1px solid #303030;
+}
+.transaction:last-child {border:0}
+.transaction small {display:block;color:var(--muted);margin-top:5px}
+.transaction button {padding:7px 10px}
+#form {display:none}
+.goalbar {
+  height:9px;
+  background:#333;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:15px;
+}
+#progress {
+  height:100%;
+  width:0;
+  background:var(--gold);
+}
+footer {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#151515;
+  border-top:1px solid #333;
+  padding:14px;
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+  letter-spacing:2px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">HRN.</div>
+    <div class="small">PERSONAL FINANCE</div>
+  </div>
+  <div class="gold">◆ PRIVATE</div>
+</header>
+
+<h1>Finansal kontrol.</h1>
+<p class="label" id="today"></p>
+
+<section class="card balance">
+  <div class="label">TOPLAM MEVCUT BAKİYE</div>
+  <div class="amount" id="balance">0,00 €</div>
+  <div class="label">Gelirlerin ve giderlerin güncel durumu</div>
+</section>
+
+<div class="stats">
+  <section class="stat">
+    <div class="label">AYLIK GELİR</div>
+    <strong class="green" id="income">0,00 €</strong>
+  </section>
+  <section class="stat">
+    <div class="label">AYLIK GİDER</div>
+    <strong class="red" id="expense">0,00 €</strong>
+  </section>
+</div>
+
+<section class="card" style="margin-top:17px">
+  <h2>İşlem yönetimi</h2>
+  <div class="actions">
+    <button class="primary" onclick="showForm('income')">+ Gelir ekle</button>
+    <button class="secondary" onclick="showForm('expense')">− Gider ekle</button>
+  </div>
+  <div id="form">
+    <h2 id="formTitle" style="margin-top:22px">Yeni işlem</h2>
+    <label>Açıklama</label>
+    <input id="description" placeholder="Örn. Maaş, kira, market">
+    <label>Tutar (€)</label>
+    <input id="value" type="number" min="0.01" step="0.01" placeholder="0,00">
+    <label>Kategori</label>
+    <select id="category">
+      <option>Maaş</option>
+      <option>Ek gelir</option>
+      <option>Kira</option>
+      <option>Elektrik / Su / İnternet</option>
+      <option>Market</option>
+      <option>Ulaşım</option>
+      <option>Sağlık</option>
+      <option>Alışveriş</option>
+      <option>Eğlence</option>
+      <option>Birikim</option>
+      <option>Diğer</option>
+    </select>
+    <label>İşlem tarihi</label>
+    <input id="date" type="date">
+    <div class="actions">
+      <button class="primary" onclick="saveTransaction()">Kaydet</button>
+      <button class="secondary" onclick="hideForm()">İptal</button>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Aylık bütçe özeti</h2>
+  <div class="label">Bu ay gelirlerden giderler çıkarıldığında</div>
+  <div class="amount" id="remaining" style="font-size:27px">0,00 €</div>
+  <div class="label">Bu ayın sonunda kalan tutar</div>
+</section>
+
+<section class="card">
+  <h2>Birikim hedefim</h2>
+  <label>Hedef tutar (€)</label>
+  <input id="goal" type="number" min="0" step="0.01" placeholder="Örn. 10000">
+  <div class="label">Mevcut birikim (€)</div>
+  <input id="saved" type="number" min="0" step="0.01" placeholder="Örn. 1500">
+  <button class="primary" style="width:100%" onclick="saveGoal()">Hedefi kaydet</button>
+  <p class="gold" id="goalText">Henüz hedef belirlenmedi.</p>
+  <div class="goalbar"><div id="progress"></div></div>
+</section>
+
+<section class="card">
+  <h2>Son işlemler</h2>
+  <div id="transactions">
+    <p class="label">Henüz işlem bulunmuyor.</p>
+  </div>
+</section>
+
+<footer>HRN FINANCE · YOUR MONEY, YOUR CONTROL</footer>
+
+<script>
+let transactions = JSON.parse(localStorage.getItem('hrn_transactions') || '[]');
+let goal = Number(localStorage.getItem('hrn_goal') || 0);
+let saved = Number(localStorage.getItem('hrn_saved') || 0);
+let type = 'income';
+
+const money = n => n.toLocaleString('de-DE',{
+  style:'currency',currency:'EUR'
+});
+
+function showForm(t) {
+  type=t;
+  document.getElementById('form').style.display='block';
+  document.getElementById('formTitle').textContent=
+    t==='income'?'Yeni gelir':'Yeni gider';
+  document.getElementById('date').value=
+    new Date().toISOString().slice(0,10);
+}
+function hideForm() {
+  document.getElementById('form').style.display='none';
+}
+function saveTransaction() {
+  const description=document.getElementById('description').value.trim();
+  const value=Number(document.getElementById('value').value);
+  const category=document.getElementById('category').value;
+  const date=document.getElementById('date').value;
+  if(!description || !Number.isFinite(value) || value<=0 || !date) {
+    alert('Lütfen bilgileri doğru doldur.');
+    return;
+  }
+  transactions.unshift({
+    id:Date.now(),description,value,category,date,type
+  });
+  localStorage.setItem('hrn_transactions',JSON.stringify(transactions));
+  document.getElementById('description').value='';
+  document.getElementById('value').value='';
+  hideForm();
+  render();
+}
+function removeTransaction(id) {
+  if(!confirm('Bu işlem silinsin mi?')) return;
+  transactions=transactions.filter(t=>t.id!==id);
+  localStorage.setItem('hrn_transactions',JSON.stringify(transactions));
+  render();
+}
+function saveGoal() {
+  goal=Math.max(0,Number(document.getElementById('goal').value)||0);
+  saved=Math.max(0,Number(document.getElementById('saved').value)||0);
+  localStorage.setItem('hrn_goal',goal);
+  localStorage.setItem('hrn_saved',saved);
+  render();
+}
+function render() {
+  const now=new Date();
+  const month=now.toISOString().slice(0,7);
+  const monthly=transactions.filter(t=>t.date.slice(0,7)===month);
+  const totalIncome=transactions.filter(t=>t.type==='income')
+    .reduce((s,t)=>s+t.value,0);
+  const totalExpense=transactions.filter(t=>t.type==='expense')
+    .reduce((s,t)=>s+t.value,0);
+  const mi=monthly.filter(t=>t.type==='income')
+    .reduce((s,t)=>s+t.value,0);
+  const me=monthly.filter(t=>t.type==='expense')
+    .reduce((s,t)=>s+t.value,0);
+
+  document.getElementById('balance').textContent=money(totalIncome-totalExpense);
+  document.getElementById('income').textContent=money(mi);
+  document.getElementById('expense').textContent=money(me);
+  document.getElementById('remaining').textContent=money(mi-me);
+
+  document.getElementById('goal').value=goal||'';
+  document.getElementById('saved').value=saved||'';
+
+  const percent=goal>0?Math.min(100,saved/goal*100):0;
+  document.getElementById('progress').style.width=percent+'%';
+  document.getElementById('goalText').textContent=goal>0?
+    money(saved)+' / '+money(goal)+' · %'+percent.toFixed(1):
+    'Henüz hedef belirlenmedi.';
+
+  document.getElementById('transactions').innerHTML=
+    transactions.length?transactions.map(t=>`
+      <div class="transaction">
+        <div>
+          <strong>${escapeHTML(t.description)}</strong>
+          <small>${escapeHTML(t.category)} · ${t.date}</small>
+        </div>
+        <div style="text-align:right">
+          <strong class="${t.type==='income'?'green':'red'}">
+            ${t.type==='income'?'+':'−'}${money(t.value)}
+          </strong>
+          <button class="secondary" onclick="removeTransaction(${t.id})">Sil</button>
+        </div>
+      </div>`).join(''):
+      '<p class="label">Henüz işlem bulunmuyor.</p>';
+}
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;',
+    '"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+document.getElementById('today').textContent=
+  new Date().toLocaleDateString('tr-TR',{
+    weekday:'long',day:'numeric',month:'long',year:'numeric'
+  });
+render();
+</script>
+</body>
+</html>
